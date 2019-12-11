@@ -16,6 +16,8 @@ fn main() {
     let write_result = write_stdout(input);
     assert_eq!(write_result.is_err(), false);
     
+    //TODO make a fn to create the clipstore file
+    //TODO complete fn to create the clip directory
 }
 
 fn read_stdin() -> io::Result<String> {
@@ -46,7 +48,7 @@ fn check_input_for_content(&input) -> bool {
     }
 }
 
-fn create_clipstore() {
+fn create_clip_dir() {
     let path = "/var/log/lib/clip"
 
     // Create the folder
