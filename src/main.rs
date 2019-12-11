@@ -1,11 +1,18 @@
 use std::io::{self, Read, Write};
+use std::fs::{self, DirBuilder};
 
 // https://doc.rust-lang.org/std/io/fn.stdin.html
 fn main() {
     let input = read_stdin()
         .unwrap()
         .to_string();
+
     
+    // if there is content coming from stdin, write it to:
+    // /var/lib/clip/clipstorage
+    if check_input_for_content(&input) == true {
+       /car 
+    };
     let write_result = write_stdout(input);
     assert_eq!(write_result.is_err(), false);
     
@@ -29,4 +36,24 @@ fn write_stdout(input: String) -> io::Result<()> {
     handle.write_all(&output);
 
     Ok(())
+}
+
+fn check_input_for_content(&input) -> bool {
+    if &input == "" {
+        false
+    } else {
+        true
+    }
+}
+
+fn create_clipstore() {
+    let path = "/var/log/lib/clip"
+
+    // Create the folder
+    DirBuilder::new()
+        .recursive(true)
+        .create(path)
+        .unwrap();
+
+    assert!(fs::metadata(path).unwrap().id_dir());
 }
