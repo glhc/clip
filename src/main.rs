@@ -1,5 +1,6 @@
+use std::error::Error;
 use std::io::{self, Read, Write};
-use std::fs::{self, DirBuilder};
+use std::fs::{self, DirBuilder, File};
 
 // https://doc.rust-lang.org/std/io/fn.stdin.html
 fn main() {
@@ -7,17 +8,16 @@ fn main() {
         .unwrap()
         .to_string();
 
-    
-    // if there is content coming from stdin, write it to:
-    // /var/lib/clip/clipstorage
-    if check_input_for_content(&input) == true {
-       /car 
+
+    if input.is_empty() {
+        //read clipstore and
+        let clipstore = read_clipstore().unwrap();
+        write_stdout(&clipstore);
+
+        //write clipstore to stdout.
+
     };
-    let write_result = write_stdout(input);
-    assert_eq!(write_result.is_err(), false);
     
-    //TODO make a fn to create the clipstore file
-    //TODO complete fn to create the clip directory
 }
 
 fn read_stdin() -> io::Result<String> {
@@ -30,32 +30,43 @@ fn read_stdin() -> io::Result<String> {
     Ok(buffer)
 }
 
-fn write_stdout(input: String) -> io::Result<()> {
+fn write_stdout(input: &String) -> Result<(), Box<dyn Error>> {
     let stdout = io::stdout();
     let mut handle = stdout.lock();
-    let output = input.into_bytes();
+    let output = input.as_bytes();
     
-    handle.write_all(&output);
+    handle.write_all(&output)?;
 
     Ok(())
 }
 
-fn check_input_for_content(&input) -> bool {
-    if &input == "" {
-        false
-    } else {
-        true
-    }
+// fn create_clipstore() -> Result<(())> {
+//     let path = "/var/lib/clip";
+
+//     // Create the folder
+//     DirBuilder::new()
+//         .recursive(true)
+//         .create(path)
+//         .unwrap();
+
+//     assert!(fs::metadata(path).unwrap().is_dir());
+
+//     let mut file = File::create("/var/lib/clip/clipstore")?;
+    
+
+//     Ok(());
+//     Err("Oops");
+// }
+
+fn read_clipstore() -> Result<String, io::Error>{
+    let mut f = File::open("/var/lib/clip/clipstore")?;
+    let mut s = String::new();
+    f.read_to_string(&mut s);
+    Ok(s)
 }
 
-fn create_clip_dir() {
-    let path = "/var/log/lib/clip"
-
-    // Create the folder
-    DirBuilder::new()
-        .recursive(true)
-        .create(path)
-        .unwrap();
-
-    assert!(fs::metadata(path).unwrap().id_dir());
+// Wipes the clipstore and writes the new stuff
+fn write_clipstore(input: &String) {
+    let clipstore_path = "/var/lib/clip/clipstore";
+    let mut clipstore = fs::write(clipstore_path, input);
 }
